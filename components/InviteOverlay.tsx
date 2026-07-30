@@ -4,23 +4,20 @@ import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { content } from "@/data/content";
 
-// --- Helper component to split string into animated character spans ---
 function SplitText({
   text,
   className = "",
-  spanClassName = "",
 }: {
   text: string;
   className?: string;
-  spanClassName?: string;
 }) {
   return (
     <span className={`inline-block ${className}`}>
       {text.split("").map((char, index) => (
         <span
           key={index}
-          className={`inline-block split-char ${spanClassName}`}
-          style={{ opacity: 0, transform: "translateY(24px)" }}
+          className="inline-block split-char"
+          style={{ opacity: 0, transform: "translateY(20px)" }}
         >
           {char === " " ? "\u00A0" : char}
         </span>
@@ -29,66 +26,56 @@ function SplitText({
   );
 }
 
-// --- Inline SVG Flourishes (Matching IMG_9318.JPG) ---
-function LineFlourishSVG({
-  pathRef,
-  className = "w-52 h-4",
-}: {
-  pathRef?: React.RefObject<SVGPathElement>;
-  className?: string;
-}) {
+// --- Exact SVG Flourishes matching IMG_9318.JPG ---
+function DiamondFlourishSVG({ className = "w-56 h-4" }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 220 16"
+      viewBox="0 0 240 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`${className} mx-auto text-gold opacity-95`}
+      className={`${className} mx-auto text-[#B8935A] opacity-95`}
     >
       <path
-        ref={pathRef}
-        d="M0 8H95M125 8H220"
+        d="M0 8H105M135 8H240"
         stroke="currentColor"
         strokeWidth="1.2"
         strokeLinecap="round"
-        style={{ strokeDasharray: 220, strokeDashoffset: 220 }}
       />
-      <circle cx="110" cy="8" r="3.5" fill="currentColor" className="flourish-icon" style={{ opacity: 0 }} />
+      <circle cx="120" cy="8" r="3" fill="currentColor" />
       <path
-        d="M102 8L110 2L118 8L110 14L102 8Z"
+        d="M112 8L120 2L128 8L120 14L112 8Z"
         stroke="currentColor"
         strokeWidth="1.2"
         fill="none"
-        className="flourish-icon"
-        style={{ opacity: 0 }}
       />
+      <circle cx="106" cy="8" r="1.5" fill="currentColor" />
+      <circle cx="134" cy="8" r="1.5" fill="currentColor" />
     </svg>
   );
 }
 
-function HeartOrnamentSVG({
-  ornamentRef,
-  className = "w-16 h-6",
-}: {
-  ornamentRef?: React.RefObject<SVGSVGElement>;
-  className?: string;
-}) {
+function HeartFlourishSVG({ className = "w-48 h-5" }: { className?: string }) {
   return (
     <svg
-      ref={ornamentRef}
-      viewBox="0 0 50 20"
+      viewBox="0 0 200 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`${className} mx-auto text-gold opacity-90`}
-      style={{ opacity: 0, transform: "scale(0.5)" }}
+      className={`${className} mx-auto text-[#B8935A] opacity-95`}
     >
       <path
-        d="M25 15C25 15 18 10 18 6.5C18 4.5 19.5 3 21.5 3C23 3 24.3 3.8 25 5C25.7 3.8 27 3 28.5 3C30.5 3 32 4.5 32 6.5C32 10 25 15 25 15Z"
+        d="M0 10H85M115 10H200"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M100 15C100 15 93 10 93 6.5C93 4.5 94.5 3 96.5 3C98 3 99.3 3.8 100 5C100.7 3.8 102 3 103.5 3C105.5 3 107 4.5 107 6.5C107 10 100 15 100 15Z"
         fill="#7B1E3A"
         stroke="currentColor"
         strokeWidth="0.8"
       />
       <path
-        d="M5 10C11 10 16 7 16 7M45 10C39 10 34 7 34 7"
+        d="M80 10C86 10 91 7 91 7M120 10C114 10 109 7 109 7"
         stroke="currentColor"
         strokeWidth="1.2"
         strokeLinecap="round"
@@ -97,7 +84,30 @@ function HeartOrnamentSVG({
   );
 }
 
-function PinIconSVG({ className = "w-4 h-4" }: { className?: string }) {
+function BottomFlourishSVG({ className = "w-44 h-4" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 180 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={`${className} mx-auto text-[#B8935A] opacity-90`}
+    >
+      <path
+        d="M0 8C30 8 45 3 60 8C75 13 82 8 90 8C98 8 105 13 120 8C135 3 150 8 180 8"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M90 12C90 12 86 9 86 7C86 5.8 86.8 5 88 5C88.8 5 89.5 5.4 90 6C90.5 5.4 91.2 5 92 5C93.2 5 94 5.8 94 7C94 9 90 12 90 12Z"
+        fill="#7B1E3A"
+      />
+    </svg>
+  );
+}
+
+function MapPinIconSVG({ className = "w-4 h-4" }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -120,16 +130,6 @@ export interface InviteOverlayProps {
 export default function InviteOverlay({ startAnimation = true }: InviteOverlayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentBoxRef = useRef<HTMLDivElement>(null);
-  const eyebrowRef = useRef<HTMLHeadingElement>(null);
-  const subEyebrowRef = useRef<HTMLParagraphElement>(null);
-  const flourishPathRef = useRef<SVGPathElement>(null);
-  const firstNameRef = useRef<HTMLDivElement>(null);
-  const connectorRef = useRef<HTMLDivElement>(null);
-  const secondNameRef = useRef<HTMLDivElement>(null);
-  const heartRef = useRef<SVGSVGElement>(null);
-  const dateRef = useRef<HTMLDivElement>(null);
-  const locationRef = useRef<HTMLDivElement>(null);
-  const footerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!startAnimation) return;
@@ -137,118 +137,21 @@ export default function InviteOverlay({ startAnimation = true }: InviteOverlayPr
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
-        delay: 0.15,
+        delay: 0.1,
       });
 
-      // 1. Content container reveal
       if (contentBoxRef.current) {
         tl.fromTo(
           contentBoxRef.current,
-          { opacity: 0, y: 25 },
-          { opacity: 1, y: 0, duration: 0.9 }
+          { opacity: 0, scale: 0.97 },
+          { opacity: 1, scale: 1, duration: 0.8 }
         );
-      }
 
-      // 2. Eyebrow "SAVE THE DATE"
-      if (eyebrowRef.current) {
-        tl.fromTo(
-          eyebrowRef.current,
-          { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.6 },
+        const chars = contentBoxRef.current.querySelectorAll(".split-char");
+        tl.to(
+          chars,
+          { opacity: 1, y: 0, duration: 0.45, stagger: 0.03, ease: "back.out(1.4)" },
           "-=0.5"
-        );
-      }
-
-      // 3. SVG flourish line drawing
-      if (flourishPathRef.current) {
-        tl.to(
-          flourishPathRef.current,
-          { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" },
-          "-=0.3"
-        );
-        tl.to(
-          ".flourish-icon",
-          { opacity: 1, duration: 0.4, stagger: 0.1 },
-          "-=0.4"
-        );
-      }
-
-      // 4. Sub-eyebrow "TO CELEBRATE THE WEDDING OF"
-      if (subEyebrowRef.current) {
-        tl.fromTo(
-          subEyebrowRef.current,
-          { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.5 },
-          "-=0.4"
-        );
-      }
-
-      // 5. First Name ("SHUBHANKAR") staggered character reveal
-      if (firstNameRef.current) {
-        const chars = firstNameRef.current.querySelectorAll(".split-char");
-        tl.to(
-          chars,
-          { opacity: 1, y: 0, duration: 0.5, stagger: 0.04, ease: "back.out(1.4)" },
-          "-=0.2"
-        );
-      }
-
-      // 6. Script Connector ("~ and ~")
-      if (connectorRef.current) {
-        tl.fromTo(
-          connectorRef.current,
-          { opacity: 0, scale: 0.85, y: 10 },
-          { opacity: 1, scale: 1, y: 0, duration: 0.6 },
-          "-=0.2"
-        );
-      }
-
-      // 7. Second Name ("SHOURYA") staggered character reveal
-      if (secondNameRef.current) {
-        const chars = secondNameRef.current.querySelectorAll(".split-char");
-        tl.to(
-          chars,
-          { opacity: 1, y: 0, duration: 0.5, stagger: 0.04, ease: "back.out(1.4)" },
-          "-=0.2"
-        );
-      }
-
-      // 8. Heart Ornament scale in
-      if (heartRef.current) {
-        tl.to(
-          heartRef.current,
-          { opacity: 0.9, scale: 1, duration: 0.5, ease: "back.out(1.7)" },
-          "-=0.2"
-        );
-      }
-
-      // 9. Date Block reveal
-      if (dateRef.current) {
-        tl.fromTo(
-          dateRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.6 },
-          "-=0.3"
-        );
-      }
-
-      // 10. Location reveal
-      if (locationRef.current) {
-        tl.fromTo(
-          locationRef.current,
-          { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.5 },
-          "-=0.3"
-        );
-      }
-
-      // 11. Footer details reveal
-      if (footerRef.current) {
-        tl.fromTo(
-          footerRef.current,
-          { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.6 },
-          "-=0.2"
         );
       }
     }, containerRef);
@@ -259,104 +162,93 @@ export default function InviteOverlay({ startAnimation = true }: InviteOverlayPr
   return (
     <div
       ref={containerRef}
-      className="relative min-h-screen w-full flex flex-col items-center justify-center pointer-events-none px-4 py-8 z-10"
+      className="relative min-h-screen w-full flex flex-col items-center justify-center pointer-events-none px-4 py-6 z-30"
     >
-      {/* Direct Floating Content Layer (No Heavy Card Box - Matching IMG_9318.JPG) */}
+      {/* Floating Exact Replica Typography Container (IMG_9318.JPG) */}
       <div
         ref={contentBoxRef}
         style={{ opacity: 0 }}
-        className="relative max-w-xl md:max-w-2xl w-full text-center p-4 sm:p-8 pointer-events-auto space-y-4 sm:space-y-5 my-auto"
+        className="relative max-w-lg md:max-w-xl w-full text-center p-3 sm:p-6 pointer-events-auto space-y-3 sm:space-y-4 my-auto select-none"
       >
-        {/* Subtle Radial Glow Backdrop for Perfect Contrast */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(251,246,236,0.85)_0%,_rgba(251,246,236,0.6)_60%,_transparent_100%)] blur-md -z-10 rounded-full pointer-events-none" />
+        {/* Subtle Radial Glow Backdrop behind central text for 100% legibility */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,249,238,0.75)_0%,_rgba(255,249,238,0.45)_55%,_transparent_90%)] blur-sm -z-10 rounded-full pointer-events-none" />
 
-        {/* Eyebrow Header */}
-        <div className="space-y-1.5">
-          <h2
-            ref={eyebrowRef}
-            style={{ opacity: 0 }}
-            className="text-xs sm:text-sm uppercase tracking-[0.35em] font-semibold text-maroon font-serif drop-shadow-[0_1px_2px_rgba(251,246,236,0.9)]"
-          >
-            {content.eyebrow}
+        {/* Line 1: SAVE THE DATE */}
+        <div className="space-y-1">
+          <h2 className="text-xs sm:text-sm uppercase tracking-[0.38em] font-semibold text-[#7B1E3A] font-serif drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
+            SAVE THE DATE
           </h2>
-          <LineFlourishSVG pathRef={flourishPathRef} className="w-48 sm:w-60 h-4" />
-          <p
-            ref={subEyebrowRef}
-            style={{ opacity: 0 }}
-            className="text-xs sm:text-sm uppercase tracking-[0.25em] font-semibold text-gold font-serif drop-shadow-[0_1px_2px_rgba(251,246,236,0.9)]"
-          >
-            {content.subEyebrow}
+          <DiamondFlourishSVG className="w-48 sm:w-56 h-3.5" />
+          <p className="text-[11px] sm:text-xs uppercase tracking-[0.28em] font-semibold text-[#B8935A] font-serif drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
+            TO CELEBRATE THE WEDDING OF
           </p>
         </div>
 
-        {/* Couple Names (Exact IMG_9318.JPG Styling) */}
-        <div className="py-1 space-y-1 sm:space-y-2 overflow-hidden">
-          <div ref={firstNameRef}>
-            <h1 className="text-[clamp(2.4rem,6vw,4.6rem)] font-bold uppercase tracking-[0.14em] text-maroon font-serif leading-none drop-shadow-[0_2px_6px_rgba(251,246,236,0.95)]">
+        {/* Lines 2 & 3: SHUBHANKAR ~ and ~ SHOURYA */}
+        <div className="py-0.5 space-y-1 overflow-hidden">
+          <div>
+            <h1 className="text-[clamp(2.5rem,6.5vw,4.5rem)] font-bold uppercase tracking-[0.14em] text-[#7B1E3A] font-serif leading-none drop-shadow-[0_2px_6px_rgba(255,255,255,0.95)]">
               <SplitText text={content.names.first} />
             </h1>
           </div>
 
-          <div
-            ref={connectorRef}
-            style={{ opacity: 0 }}
-            className="font-script text-[clamp(2.2rem,5vw,3.6rem)] text-gold py-0.5 drop-shadow-[0_1px_3px_rgba(251,246,236,0.9)] select-none"
-          >
+          <div className="font-script text-[clamp(2.2rem,5vw,3.6rem)] text-[#B8935A] py-0.5 drop-shadow-[0_1px_3px_rgba(255,255,255,0.9)]">
             ~ {content.names.connector} ~
           </div>
 
-          <div ref={secondNameRef}>
-            <h1 className="text-[clamp(2.4rem,6vw,4.6rem)] font-bold uppercase tracking-[0.14em] text-maroon font-serif leading-none drop-shadow-[0_2px_6px_rgba(251,246,236,0.95)]">
+          <div>
+            <h1 className="text-[clamp(2.5rem,6.5vw,4.5rem)] font-bold uppercase tracking-[0.14em] text-[#7B1E3A] font-serif leading-none drop-shadow-[0_2px_6px_rgba(255,255,255,0.95)]">
               <SplitText text={content.names.second} />
             </h1>
           </div>
         </div>
 
-        {/* Heart / Floral Divider */}
-        <HeartOrnamentSVG ornamentRef={heartRef} className="w-14 sm:w-16 h-5" />
+        {/* Line 4: Heart Flourish */}
+        <HeartFlourishSVG className="w-44 sm:w-52 h-4.5" />
 
-        {/* Date Section (SATURDAY | 21 | NOVEMBER) */}
-        <div ref={dateRef} style={{ opacity: 0 }} className="space-y-1">
-          <div className="flex items-center justify-center gap-3 sm:gap-6 text-maroon font-serif">
-            <span className="uppercase text-xs sm:text-sm tracking-[0.25em] font-semibold text-gold drop-shadow-xs">
-              {content.date.day}
+        {/* Line 5: SATURDAY | 21 | NOVEMBER */}
+        <div className="space-y-1">
+          <div className="flex items-center justify-center gap-3 sm:gap-5 text-[#7B1E3A] font-serif">
+            <span className="uppercase text-xs sm:text-sm tracking-[0.25em] font-semibold text-[#B8935A] drop-shadow-xs">
+              SATURDAY
             </span>
-            <span className="h-7 w-px bg-gold/60" />
-            <span className="text-[clamp(2.2rem,5vw,3.6rem)] font-bold text-maroon leading-none font-serif drop-shadow-[0_2px_4px_rgba(251,246,236,0.9)]">
-              {content.date.date}
+            <span className="h-6 w-px bg-[#B8935A]/60" />
+            <span className="text-[clamp(2.2rem,5vw,3.5rem)] font-bold text-[#7B1E3A] leading-none font-serif drop-shadow-[0_2px_4px_rgba(255,255,255,0.9)]">
+              21
             </span>
-            <span className="h-7 w-px bg-gold/60" />
-            <span className="uppercase text-xs sm:text-sm tracking-[0.25em] font-semibold text-gold drop-shadow-xs">
-              {content.date.month}
+            <span className="h-6 w-px bg-[#B8935A]/60" />
+            <span className="uppercase text-xs sm:text-sm tracking-[0.25em] font-semibold text-[#B8935A] drop-shadow-xs">
+              NOVEMBER
             </span>
           </div>
 
-          <div className="text-sm sm:text-base tracking-[0.3em] font-bold text-maroon font-serif drop-shadow-xs">
-            {content.date.year}
+          {/* Line 6: 2026 */}
+          <div className="text-sm sm:text-base tracking-[0.3em] font-bold text-[#7B1E3A] font-serif drop-shadow-xs">
+            2026
           </div>
+          <div className="w-2 h-2 rotate-45 bg-[#B8935A] mx-auto opacity-80" />
         </div>
 
-        {/* Location Section */}
-        <div
-          ref={locationRef}
-          style={{ opacity: 0 }}
-          className="flex flex-col items-center justify-center gap-1 text-maroon font-serif text-xs sm:text-sm tracking-[0.25em] uppercase font-semibold"
-        >
-          <LineFlourishSVG className="w-36 sm:w-44 h-3 opacity-80" />
+        {/* Line 7: GURGAON */}
+        <div className="flex flex-col items-center justify-center gap-1">
           <div className="flex items-center gap-1.5 pt-1">
-            <PinIconSVG className="w-4 h-4 text-maroon" />
-            <span className="text-maroon font-bold">{content.location}</span>
+            <MapPinIconSVG className="w-4 h-4" />
+            <span className="text-xs sm:text-sm tracking-[0.28em] font-bold text-[#7B1E3A] font-serif uppercase">
+              GURGAON
+            </span>
           </div>
+          <HeartFlourishSVG className="w-36 sm:w-44 h-3.5 opacity-85" />
         </div>
 
-        {/* Footer Details (Exact Copy & Flourishes) */}
-        <div ref={footerRef} style={{ opacity: 0 }} className="pt-2 space-y-2">
-          <LineFlourishSVG className="w-44 sm:w-52 h-3 opacity-80" />
-          <div className="space-y-1 text-xs sm:text-sm text-maroon/90 font-serif font-medium tracking-[0.15em] uppercase drop-shadow-xs">
-            <p>{content.footerLine1}</p>
-            <p className="text-[11px] sm:text-xs text-maroon/80">{content.footerLine2}</p>
+        {/* Lines 8 & 9: INVITATION TO FOLLOW WITH ALL DETAILS OF CELEBRATIONS */}
+        <div className="pt-1 space-y-1">
+          <div className="space-y-0.5 text-[11px] sm:text-xs text-[#7B1E3A] font-serif font-bold tracking-[0.16em] uppercase drop-shadow-xs">
+            <p>INVITATION TO FOLLOW</p>
+            <p className="text-[10px] sm:text-[11px] text-[#7B1E3A]/90">
+              WITH ALL DETAILS OF CELEBRATIONS
+            </p>
           </div>
-          <LineFlourishSVG className="w-36 sm:w-44 h-3 opacity-70" />
+          <BottomFlourishSVG className="w-36 sm:w-44 h-3 opacity-80" />
         </div>
       </div>
     </div>

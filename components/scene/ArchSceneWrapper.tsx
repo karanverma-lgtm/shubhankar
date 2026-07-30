@@ -20,11 +20,11 @@ export default function ArchSceneWrapper({ onCreated }: ArchSceneWrapperProps) {
 
   return (
     <div className="relative w-full h-full flex items-center justify-center p-2 sm:p-4 select-none">
-      {/* Aspect Ratio Container matching IMG_9318.JPG (3:4 portrait ratio) */}
+      {/* Aspect Ratio Container matching the floral arch backdrop */}
       <div className="relative w-full h-full max-w-[520px] max-h-[92vh] aspect-[3/4] rounded-2xl shadow-2xl overflow-hidden border border-gold/30">
-        {/* Clean Pristine Floral Arch Backdrop (Text Removed) */}
+        {/* User-Provided Text-Free Floral Arch Backdrop */}
         <Image
-          src="/images/IMG_9318_clean.JPG"
+          src="/images/bg_arch.png"
           alt="Shubhankar & Shourya Wedding Invitation Floral Arch Backdrop"
           fill
           priority

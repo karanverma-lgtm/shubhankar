@@ -5,6 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import ArchSceneWrapper from "@/components/scene/ArchSceneWrapper";
 import LoadingSplash from "@/components/LoadingSplash";
 import NavBubbles from "@/components/NavBubbles";
+import MagicTrail from "@/components/MagicTrail";
+import CelebrateButton from "@/components/CelebrateButton";
+import InteractiveCouple from "@/components/InteractiveCouple";
 import Screen1Hero from "@/components/screens/Screen1Hero";
 import Screen2SheSaidYes from "@/components/screens/Screen2SheSaidYes";
 import Screen3OurStory from "@/components/screens/Screen3OurStory";
@@ -55,19 +58,28 @@ export default function Home() {
       className="h-screen w-full relative overflow-hidden flex flex-col items-center justify-center transition-colors duration-700 ease-out"
       style={{ backgroundColor: currentBgColor }}
     >
-      {/* 1. AnimatePresence Loading Splash Screen */}
+      {/* 1. Magical Sparkle Cursor & Touch Trail */}
+      <MagicTrail />
+
+      {/* 2. Floating Celebration Fireworks Button */}
+      <CelebrateButton />
+
+      {/* 3. Interactive Couple Avatars */}
+      <InteractiveCouple />
+
+      {/* 4. AnimatePresence Loading Splash Screen */}
       <LoadingSplash
         isVisible={isSplashVisible}
         onExitComplete={handleSplashExitComplete}
       />
 
-      {/* 2. 3D Arch Scene Background (Fixed in Viewport) */}
+      {/* 5. 3D Arch Scene Background (Fixed in Viewport) */}
       <ArchSceneWrapper onCreated={handleSceneCreated} />
 
-      {/* 3. Interactive Floating Section Navigation Bar */}
+      {/* 6. Interactive Floating Section Navigation Bar */}
       <NavBubbles />
 
-      {/* 4. Active Screen Component Container with Framer Motion AnimatePresence */}
+      {/* 7. Active Screen Component Container with Framer Motion AnimatePresence */}
       <div className="relative w-full h-full z-10">
         <AnimatePresence mode="wait">
           {activeIndex === 0 && (
@@ -139,3 +151,4 @@ export default function Home() {
     </main>
   );
 }
+

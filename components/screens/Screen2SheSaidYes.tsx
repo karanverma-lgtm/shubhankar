@@ -2,13 +2,10 @@
 
 import React, { useRef, useEffect } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import confetti from "canvas-confetti";
 import { content } from "@/data/content";
-import { useActiveScreenStore } from "@/lib/store";
 import LottiePlayer from "@/components/LottiePlayer";
 
-// --- Helper component to split string into animated character spans ---
 function SplitText({
   text,
   className = "",
@@ -31,7 +28,6 @@ function SplitText({
   );
 }
 
-// --- Floating Heart Particles Component ---
 function FloatingHeartsBackground() {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-60">
@@ -89,7 +85,7 @@ function FloatingHeartsBackground() {
 }
 
 export default function Screen2SheSaidYes() {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const heartSvgRef = useRef<SVGSVGElement>(null);
   const ringLottieRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -97,72 +93,45 @@ export default function Screen2SheSaidYes() {
   const coupleLottieRef = useRef<HTMLDivElement>(null);
   const quoteRef = useRef<HTMLParagraphElement>(null);
 
-  const confettiFiredRef = useRef(false);
-  const { setActiveIndex, setBgColor } = useActiveScreenStore();
+  useEffect(() => {
+    // Fire confetti burst on section entrance
+    const fireConfettiBursts = () => {
+      const defaults = {
+        origin: { y: 0.85 },
+        colors: ["#B8935A", "#7B1E3A", "#F7DCE0", "#FFFFFF"],
+      };
 
-  const fireConfettiBursts = () => {
-    if (confettiFiredRef.current) return;
-    confettiFiredRef.current = true;
+      confetti({
+        ...defaults,
+        particleCount: 45,
+        angle: 60,
+        spread: 60,
+        origin: { x: 0, y: 0.85 },
+      });
 
-    const defaults = {
-      origin: { y: 0.85 },
-      colors: ["#B8935A", "#7B1E3A", "#F7DCE0", "#FFFFFF"],
+      confetti({
+        ...defaults,
+        particleCount: 45,
+        angle: 120,
+        spread: 60,
+        origin: { x: 1, y: 0.85 },
+      });
     };
 
-    confetti({
-      ...defaults,
-      particleCount: 50,
-      angle: 60,
-      spread: 60,
-      origin: { x: 0, y: 0.85 },
-    });
-
-    confetti({
-      ...defaults,
-      particleCount: 50,
-      angle: 120,
-      spread: 60,
-      origin: { x: 1, y: 0.85 },
-    });
-  };
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    fireConfettiBursts();
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "+=120%",
-          pin: true,
-          pinSpacing: true,
-          scrub: 1,
-          onUpdate: (self) => {
-            // Trigger confetti burst at ~30% progress
-            if (self.progress >= 0.28) {
-              fireConfettiBursts();
-            }
-          },
-          onToggle: (self) => {
-            if (self.isActive) {
-              setActiveIndex(1);
-              setBgColor("#F7DCE0");
-            }
-          },
-          onEnter: () => {
-            setActiveIndex(1);
-            setBgColor("#F7DCE0");
-          },
-        },
+        defaults: { ease: "power3.out" },
+        delay: 0.1,
       });
 
-      // 1. Heart SVG scales in with bouncy ease
+      // 1. Heart SVG bouncy scale
       if (heartSvgRef.current) {
         tl.fromTo(
           heartSvgRef.current,
           { scale: 0, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.8, ease: "back.out(1.7)" }
+          { scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.7)" }
         );
       }
 
@@ -171,7 +140,7 @@ export default function Screen2SheSaidYes() {
         tl.fromTo(
           ringLottieRef.current,
           { opacity: 0, scale: 0.7 },
-          { opacity: 1, scale: 1, duration: 0.6 },
+          { opacity: 1, scale: 1, duration: 0.5 },
           "-=0.2"
         );
       }
@@ -181,8 +150,8 @@ export default function Screen2SheSaidYes() {
         const chars = titleRef.current.querySelectorAll(".split-char-s2");
         tl.to(
           chars,
-          { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.03, ease: "back.out(1.4)" },
-          "-=0.3"
+          { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.03, ease: "back.out(1.4)" },
+          "-=0.2"
         );
       }
 
@@ -201,7 +170,7 @@ export default function Screen2SheSaidYes() {
         tl.fromTo(
           coupleLottieRef.current,
           { opacity: 0, scale: 0.85 },
-          { opacity: 1, scale: 1, duration: 0.7 },
+          { opacity: 1, scale: 1, duration: 0.6 },
           "-=0.2"
         );
       }
@@ -211,30 +180,26 @@ export default function Screen2SheSaidYes() {
         tl.fromTo(
           quoteRef.current,
           { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.6 },
-          "-=0.3"
+          { opacity: 1, y: 0, duration: 0.5 },
+          "-=0.2"
         );
       }
-    }, sectionRef);
+    }, containerRef);
 
     return () => ctx.revert();
-  }, [setActiveIndex, setBgColor]);
+  }, []);
 
   return (
-    <section
-      id="screen-2"
-      ref={sectionRef}
-      className="h-screen w-full relative flex flex-col items-center justify-center px-4 overflow-hidden"
+    <div
+      ref={containerRef}
+      className="w-full h-full flex flex-col items-center justify-center px-4 relative overflow-hidden"
       style={{
         background: "radial-gradient(ellipse at center, rgba(255,230,236,0.95) 0%, rgba(247,220,224,0.95) 100%)",
       }}
     >
-      {/* Floating Heart Particles Background */}
       <FloatingHeartsBackground />
 
-      {/* Main Content Container */}
-      <div className="relative max-w-xl md:max-w-2xl w-full text-center p-8 sm:p-12 rounded-3xl bg-ivory/85 backdrop-blur-md border border-gold/30 shadow-[0_25px_60px_rgba(123,30,58,0.15)] space-y-5 z-10 my-auto">
-        {/* Subtle Decorative Heart SVG Header */}
+      <div className="relative max-w-xl md:max-w-2xl w-full text-center p-7 sm:p-11 rounded-3xl bg-ivory/85 backdrop-blur-md border border-gold/30 shadow-[0_25px_60px_rgba(123,30,58,0.15)] space-y-5 z-10 my-auto">
         <svg
           ref={heartSvgRef}
           viewBox="0 0 24 24"
@@ -249,7 +214,6 @@ export default function Screen2SheSaidYes() {
           />
         </svg>
 
-        {/* Ring Pop Lottie Container */}
         <div ref={ringLottieRef} style={{ opacity: 0 }} className="flex justify-center -my-2">
           <LottiePlayer
             src="/lottie/ring-pop.json"
@@ -258,7 +222,6 @@ export default function Screen2SheSaidYes() {
           />
         </div>
 
-        {/* Headline & Subtitle */}
         <div className="space-y-1 overflow-hidden">
           <h2
             ref={titleRef}
@@ -277,7 +240,6 @@ export default function Screen2SheSaidYes() {
 
         <div className="h-px w-20 bg-gold/40 mx-auto" />
 
-        {/* Couple Hug Lottie Container */}
         <div ref={coupleLottieRef} style={{ opacity: 0 }} className="flex justify-center py-1">
           <LottiePlayer
             src="/lottie/couple-hug.json"
@@ -286,7 +248,6 @@ export default function Screen2SheSaidYes() {
           />
         </div>
 
-        {/* Quote Caption */}
         <p
           ref={quoteRef}
           style={{ opacity: 0 }}
@@ -295,6 +256,6 @@ export default function Screen2SheSaidYes() {
           "{content.screen2.quote}"
         </p>
       </div>
-    </section>
+    </div>
   );
 }

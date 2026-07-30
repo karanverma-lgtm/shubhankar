@@ -27,10 +27,10 @@ export const metadata: Metadata = {
     siteName: "Shubhankar & Shourya Wedding",
     images: [
       {
-        url: "https://shubhankar-shourya-invite.vercel.app/og-image.jpg",
+        url: "https://shubhankar-shourya-invite.vercel.app/og-image-shesaidyes.jpg",
         width: 1200,
         height: 630,
-        alt: "Shubhankar & Shourya Wedding Invitation",
+        alt: "Shubhankar & Shourya — She Said Yes Wedding Invitation",
       },
     ],
     locale: "en_US",
@@ -40,9 +40,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Shubhankar & Shourya — 3D Wedding Invitation",
     description: "To celebrate the wedding of Shubhankar & Shourya on Saturday, 21st November 2026 in Gurgaon.",
-    images: ["https://shubhankar-shourya-invite.vercel.app/og-image.jpg"],
+    images: ["https://shubhankar-shourya-invite.vercel.app/og-image-shesaidyes.jpg"],
   },
 };
+
 
 
 export default function RootLayout({

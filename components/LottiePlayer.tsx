@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 export interface LottiePlayerProps {
@@ -10,7 +10,6 @@ export interface LottiePlayerProps {
   onComplete?: () => void;
   className?: string;
   fallbackColor?: string;
-  aspectRatio?: string;
 }
 
 export default function LottiePlayer({
@@ -22,9 +21,11 @@ export default function LottiePlayer({
   fallbackColor = "#B8935A",
 }: LottiePlayerProps) {
   const [hasError, setHasError] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const dotLottieInstanceRef = useRef<any>(null);
 
+  // Asset availability check
   useEffect(() => {
-    // Verify asset availability via HEAD request to handle 404 gracefully
     fetch(src, { method: "HEAD" })
       .then((res) => {
         if (!res.ok) {
@@ -36,9 +37,35 @@ export default function LottiePlayer({
       });
   }, [src]);
 
+  // Viewport IntersectionObserver to pause off-screen Lotties & preserve mobile battery/CPU
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const lottie = dotLottieInstanceRef.current;
+          if (!lottie) return;
+
+          if (entry.isIntersecting) {
+            lottie.play();
+          } else {
+            lottie.pause();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
   if (hasError) {
     return (
       <div
+        ref={containerRef}
         className={`flex items-center justify-center rounded-2xl border border-gold/40 bg-ivory/50 backdrop-blur-xs p-3 transition-all ${className}`}
       >
         <div className="relative flex items-center justify-center">
@@ -58,12 +85,13 @@ export default function LottiePlayer({
   }
 
   return (
-    <div className={className}>
+    <div ref={containerRef} className={className}>
       <DotLottieReact
         src={src}
         loop={loop}
         autoplay={autoplay}
         dotLottieRefCallback={(dotLottie) => {
+          dotLottieInstanceRef.current = dotLottie;
           if (dotLottie && onComplete) {
             dotLottie.addEventListener("complete", onComplete);
           }

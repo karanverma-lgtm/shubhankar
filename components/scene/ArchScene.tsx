@@ -6,12 +6,81 @@ import { PerspectiveCamera, Sparkles } from "@react-three/drei";
 import * as THREE from "three";
 import { CameraRig } from "./CameraRig";
 
-// --- Color Palette Constants ---
+// --- Color Palette Constants (Matching IMG_9318.JPG) ---
 const COLOR_MAROON = new THREE.Color("#7B1E3A");
 const COLOR_GOLD = new THREE.Color("#B8935A");
 const COLOR_BLUSH = new THREE.Color("#E89DA2");
-const COLOR_LEAF = new THREE.Color("#4A5D3A");
-const COLOR_STONE = new THREE.Color("#6E655B");
+const COLOR_ROSE_PINK = new THREE.Color("#E83D67");
+const COLOR_MARIGOLD_ORANGE = new THREE.Color("#FF9E1B");
+const COLOR_WHITE = new THREE.Color("#FFFFFF");
+const COLOR_LEAF = new THREE.Color("#3A5D2A");
+const COLOR_STONE = new THREE.Color("#756A5E");
+
+// --- Component: 3D Golden Candle Lantern ---
+function GoldenLantern({ position }: { position: [number, number, number] }) {
+  const lightRef = useRef<THREE.PointLight>(null!);
+
+  useFrame((state) => {
+    if (lightRef.current) {
+      const time = state.clock.getElapsedTime();
+      // Realistic flickering candle flame effect
+      lightRef.current.intensity = 2.5 + Math.sin(time * 8) * 0.4 + Math.cos(time * 13) * 0.3;
+    }
+  });
+
+  return (
+    <group position={position}>
+      {/* Outer Golden Lantern Frame */}
+      <mesh position={[0, 0.4, 0]}>
+        <cylinderGeometry args={[0.2, 0.28, 0.75, 6]} />
+        <meshStandardMaterial color="#B8935A" roughness={0.3} metalness={0.8} />
+      </mesh>
+
+      {/* Top Cap & Ring */}
+      <mesh position={[0, 0.85, 0]}>
+        <coneGeometry args={[0.25, 0.25, 6]} />
+        <meshStandardMaterial color="#B8935A" roughness={0.3} metalness={0.8} />
+      </mesh>
+      <mesh position={[0, 1.02, 0]}>
+        <torusGeometry args={[0.08, 0.02, 8, 16]} />
+        <meshStandardMaterial color="#B8935A" roughness={0.3} metalness={0.8} />
+      </mesh>
+
+      {/* Inner Glass */}
+      <mesh position={[0, 0.4, 0]}>
+        <cylinderGeometry args={[0.17, 0.24, 0.68, 6]} />
+        <meshPhysicalMaterial
+          color="#FFF8E7"
+          transparent
+          opacity={0.35}
+          roughness={0.1}
+          transmission={0.8}
+        />
+      </mesh>
+
+      {/* Candle Pillar */}
+      <mesh position={[0, 0.25, 0]}>
+        <cylinderGeometry args={[0.08, 0.08, 0.35, 16]} />
+        <meshStandardMaterial color="#FFFEEA" roughness={0.8} />
+      </mesh>
+
+      {/* Glowing Flame */}
+      <mesh position={[0, 0.46, 0]}>
+        <sphereGeometry args={[0.04, 16, 16]} />
+        <meshBasicMaterial color="#FFB852" />
+      </mesh>
+
+      {/* Candle Flickering Light */}
+      <pointLight
+        ref={lightRef}
+        position={[0, 0.5, 0]}
+        color="#FFB03A"
+        intensity={2.8}
+        distance={6}
+      />
+    </group>
+  );
+}
 
 // --- Component: Individual Arch Ring ---
 function ArchRing({
@@ -37,22 +106,22 @@ function ArchRing({
   }, [positionZ, width, height]);
 
   const tubeGeo = useMemo(() => {
-    return new THREE.TubeGeometry(curve, 48, 0.35, 10, false);
+    return new THREE.TubeGeometry(curve, 48, 0.38, 10, false);
   }, [curve]);
 
   return (
     <mesh geometry={tubeGeo}>
       <meshStandardMaterial
         color={COLOR_STONE}
-        roughness={0.88}
+        roughness={0.85}
         metalness={0.08}
       />
     </mesh>
   );
 }
 
-// --- Component: Instanced Foliage & Blossoms along Archways ---
-function FloralInstancedFoliage({ count = 450 }: { count?: number }) {
+// --- Component: Dense Instanced Floral Vines (Matching IMG_9318.JPG) ---
+function FloralInstancedFoliage({ count = 550 }: { count?: number }) {
   const meshRef = useRef<THREE.InstancedMesh>(null!);
 
   const { matrices, colors } = useMemo(() => {
@@ -67,7 +136,15 @@ function FloralInstancedFoliage({ count = 450 }: { count?: number }) {
     ];
 
     const dummy = new THREE.Object3D();
-    const availableColors = [COLOR_MAROON, COLOR_GOLD, COLOR_BLUSH, COLOR_LEAF];
+    const availableColors = [
+      COLOR_ROSE_PINK,
+      COLOR_MARIGOLD_ORANGE,
+      COLOR_WHITE,
+      COLOR_BLUSH,
+      COLOR_MAROON,
+      COLOR_GOLD,
+      COLOR_LEAF,
+    ];
 
     let itemsCreated = 0;
     const perArchCount = Math.floor(count / arches.length);
@@ -90,10 +167,10 @@ function FloralInstancedFoliage({ count = 450 }: { count?: number }) {
         if (itemsCreated >= count) return;
 
         const angle = Math.random() * Math.PI * 2;
-        const radius = 0.35 + Math.random() * 0.45;
+        const radius = 0.38 + Math.random() * 0.55;
         const offsetX = Math.cos(angle) * radius;
         const offsetY = Math.sin(angle) * radius;
-        const offsetZ = (Math.random() - 0.5) * 0.8;
+        const offsetZ = (Math.random() - 0.5) * 0.9;
 
         dummy.position.set(pt.x + offsetX, pt.y + offsetY, pt.z + offsetZ);
         dummy.rotation.set(
@@ -102,7 +179,7 @@ function FloralInstancedFoliage({ count = 450 }: { count?: number }) {
           Math.random() * Math.PI
         );
 
-        const scale = 0.08 + Math.random() * 0.18;
+        const scale = 0.09 + Math.random() * 0.22;
         dummy.scale.set(scale, scale, scale);
         dummy.updateMatrix();
 
@@ -133,18 +210,15 @@ function FloralInstancedFoliage({ count = 450 }: { count?: number }) {
   const geometry = useMemo(() => new THREE.DodecahedronGeometry(0.2, 1), []);
 
   return (
-    <instancedMesh
-      ref={meshRef}
-      args={[geometry, undefined, matrices.length]}
-    >
-      <meshStandardMaterial roughness={0.7} metalness={0.1} />
+    <instancedMesh ref={meshRef} args={[geometry, undefined, matrices.length]}>
+      <meshStandardMaterial roughness={0.65} metalness={0.1} />
     </instancedMesh>
   );
 }
 
-// --- Component: Drifting Petals ---
+// --- Component: Drifting & Path Petals ---
 function DriftingPetals({
-  count = 120,
+  count = 140,
   reducedMotion = false,
 }: {
   count?: number;
@@ -155,7 +229,7 @@ function DriftingPetals({
   const { dummy, petalData } = useMemo(() => {
     const dummyObj = new THREE.Object3D();
     const data = Array.from({ length: count }, () => ({
-      x: (Math.random() - 0.5) * 8,
+      x: (Math.random() - 0.5) * 9,
       y: Math.random() * 6 - 1,
       z: Math.random() * -24 + 4,
       rotX: Math.random() * Math.PI,
@@ -164,9 +238,9 @@ function DriftingPetals({
       speedY: 0.2 + Math.random() * 0.4,
       swaySpeed: 0.8 + Math.random() * 1.2,
       swayAmp: 0.2 + Math.random() * 0.3,
-      scale: 0.05 + Math.random() * 0.07,
-      color: [COLOR_BLUSH, COLOR_MAROON, COLOR_GOLD][
-        Math.floor(Math.random() * 3)
+      scale: 0.05 + Math.random() * 0.08,
+      color: [COLOR_ROSE_PINK, COLOR_MARIGOLD_ORANGE, COLOR_BLUSH, COLOR_GOLD][
+        Math.floor(Math.random() * 4)
       ],
     }));
 
@@ -192,7 +266,7 @@ function DriftingPetals({
       p.y -= delta * p.speedY;
       if (p.y < -1.2) {
         p.y = 5.5;
-        p.x = (Math.random() - 0.5) * 8;
+        p.x = (Math.random() - 0.5) * 9;
       }
 
       const currentX = p.x + Math.sin(time * p.swaySpeed + i) * p.swayAmp;
@@ -221,7 +295,7 @@ function DriftingPetals({
         roughness={0.6}
         side={THREE.DoubleSide}
         transparent
-        opacity={0.85}
+        opacity={0.88}
       />
     </instancedMesh>
   );
@@ -235,9 +309,9 @@ function SceneContent({
   isMobile: boolean;
   reducedMotion: boolean;
 }) {
-  const foliageCount = isMobile ? 140 : 450;
-  const petalsCount = isMobile ? 35 : 120;
-  const sparklesCount = isMobile ? 25 : 80;
+  const foliageCount = isMobile ? 180 : 550;
+  const petalsCount = isMobile ? 45 : 140;
+  const sparklesCount = isMobile ? 30 : 90;
 
   return (
     <>
@@ -252,22 +326,26 @@ function SceneContent({
       {/* GSAP Driven Camera Rig */}
       <CameraRig reducedMotion={reducedMotion} />
 
-      {/* Atmospheric Fog */}
+      {/* Warm Gold Atmospheric Fog */}
       <fog attach="fog" args={["#F5E6D3", 4, 28]} />
 
-      {/* Warm Ambient & Directional Lighting */}
-      <ambientLight color="#FFDFA8" intensity={1.2} />
+      {/* Warm Golden Sunlight Lighting */}
+      <ambientLight color="#FFE4B8" intensity={1.3} />
       <directionalLight
         position={[4, 8, 4]}
         color="#FFF0D4"
-        intensity={1.4}
+        intensity={1.5}
       />
 
-      {/* Volumetric Glowing Light Source at Far End of Tunnel */}
-      <pointLight position={[0, 1.8, -21]} color="#FFB852" intensity={8} distance={30} />
+      {/* 3D Golden Candle Lanterns on Left and Right Pathway (IMG_9318.JPG) */}
+      <GoldenLantern position={[-2.2, -0.9, 2.6]} />
+      <GoldenLantern position={[2.2, -0.9, 2.6]} />
+
+      {/* Intense Volumetric Golden Light Source at Far Horizon */}
+      <pointLight position={[0, 1.8, -21]} color="#FFB852" intensity={9} distance={32} />
       <mesh position={[0, 2.0, -22]}>
-        <sphereGeometry args={[1.5, 24, 24]} />
-        <meshBasicMaterial color="#FFE2A8" transparent opacity={0.65} />
+        <sphereGeometry args={[1.8, 32, 32]} />
+        <meshBasicMaterial color="#FFE2A8" transparent opacity={0.75} />
       </mesh>
 
       {/* Stone Arch Rings */}
@@ -276,7 +354,7 @@ function SceneContent({
       <ArchRing positionZ={-10} width={4.6} height={4.0} />
       <ArchRing positionZ={-16} width={3.8} height={3.6} />
 
-      {/* Instanced Floral Blossoms & Foliage */}
+      {/* Dense Floral Blossoms & Vines */}
       <FloralInstancedFoliage count={foliageCount} />
 
       {/* Drifting Petals */}

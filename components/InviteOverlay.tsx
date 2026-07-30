@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import { motion } from "framer-motion";
 import { content } from "@/data/content";
 
 // --- Helper component to split string into animated character spans ---
@@ -30,34 +29,34 @@ function SplitText({
   );
 }
 
-// --- Inline SVG Flourishes with Animatable Paths ---
+// --- Inline SVG Flourishes (Matching IMG_9318.JPG) ---
 function LineFlourishSVG({
   pathRef,
-  className = "w-48 h-4",
+  className = "w-52 h-4",
 }: {
   pathRef?: React.RefObject<SVGPathElement>;
   className?: string;
 }) {
   return (
     <svg
-      viewBox="0 0 200 16"
+      viewBox="0 0 220 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`${className} mx-auto text-gold opacity-90`}
+      className={`${className} mx-auto text-gold opacity-95`}
     >
       <path
         ref={pathRef}
-        d="M0 8H85M115 8H200"
+        d="M0 8H95M125 8H220"
         stroke="currentColor"
         strokeWidth="1.2"
         strokeLinecap="round"
-        style={{ strokeDasharray: 200, strokeDashoffset: 200 }}
+        style={{ strokeDasharray: 220, strokeDashoffset: 220 }}
       />
-      <circle cx="100" cy="8" r="3" fill="currentColor" className="flourish-icon" style={{ opacity: 0 }} />
+      <circle cx="110" cy="8" r="3.5" fill="currentColor" className="flourish-icon" style={{ opacity: 0 }} />
       <path
-        d="M93 8L100 2L107 8L100 14L93 8Z"
+        d="M102 8L110 2L118 8L110 14L102 8Z"
         stroke="currentColor"
-        strokeWidth="1"
+        strokeWidth="1.2"
         fill="none"
         className="flourish-icon"
         style={{ opacity: 0 }}
@@ -68,7 +67,7 @@ function LineFlourishSVG({
 
 function HeartOrnamentSVG({
   ornamentRef,
-  className = "w-12 h-6",
+  className = "w-16 h-6",
 }: {
   ornamentRef?: React.RefObject<SVGSVGElement>;
   className?: string;
@@ -76,20 +75,22 @@ function HeartOrnamentSVG({
   return (
     <svg
       ref={ornamentRef}
-      viewBox="0 0 40 20"
+      viewBox="0 0 50 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`${className} mx-auto text-gold opacity-85`}
+      className={`${className} mx-auto text-gold opacity-90`}
       style={{ opacity: 0, transform: "scale(0.5)" }}
     >
       <path
-        d="M20 15C20 15 13 10 13 6.5C13 4.5 14.5 3 16.5 3C18 3 19.3 3.8 20 5C20.7 3.8 22 3 23.5 3C25.5 3 27 4.5 27 6.5C27 10 20 15 20 15Z"
-        fill="currentColor"
+        d="M25 15C25 15 18 10 18 6.5C18 4.5 19.5 3 21.5 3C23 3 24.3 3.8 25 5C25.7 3.8 27 3 28.5 3C30.5 3 32 4.5 32 6.5C32 10 25 15 25 15Z"
+        fill="#7B1E3A"
+        stroke="currentColor"
+        strokeWidth="0.8"
       />
       <path
-        d="M5 10C9 10 12 7 12 7M35 10C31 10 28 7 28 7"
+        d="M5 10C11 10 16 7 16 7M45 10C39 10 34 7 34 7"
         stroke="currentColor"
-        strokeWidth="1"
+        strokeWidth="1.2"
         strokeLinecap="round"
       />
     </svg>
@@ -106,23 +107,7 @@ function PinIconSVG({ className = "w-4 h-4" }: { className?: string }) {
     >
       <path
         d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
-function CalendarIconSVG({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-    >
-      <path
-        d="M19 4H5C3.89 4 3 4.89 3 6V20C3 21.1 3.89 22 5 22H19C20.1 22 21 21.1 21 20V6C21 4.89 20.1 4 19 4ZM19 20H5V9H19V20ZM19 7H5V6H19V7ZM7 2H9V5H7V2ZM15 2H17V5H15V2Z"
-        fill="currentColor"
+        fill="#7B1E3A"
       />
     </svg>
   );
@@ -134,7 +119,7 @@ export interface InviteOverlayProps {
 
 export default function InviteOverlay({ startAnimation = true }: InviteOverlayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const contentBoxRef = useRef<HTMLDivElement>(null);
   const eyebrowRef = useRef<HTMLHeadingElement>(null);
   const subEyebrowRef = useRef<HTMLParagraphElement>(null);
   const flourishPathRef = useRef<SVGPathElement>(null);
@@ -144,7 +129,6 @@ export default function InviteOverlay({ startAnimation = true }: InviteOverlayPr
   const heartRef = useRef<SVGSVGElement>(null);
   const dateRef = useRef<HTMLDivElement>(null);
   const locationRef = useRef<HTMLDivElement>(null);
-  const actionsRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -153,25 +137,25 @@ export default function InviteOverlay({ startAnimation = true }: InviteOverlayPr
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
-        delay: 0.1,
+        delay: 0.15,
       });
 
-      // 1. Card container backdrop fade in
-      if (cardRef.current) {
+      // 1. Content container reveal
+      if (contentBoxRef.current) {
         tl.fromTo(
-          cardRef.current,
-          { opacity: 0, y: 30, scale: 0.96 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.9 }
+          contentBoxRef.current,
+          { opacity: 0, y: 25 },
+          { opacity: 1, y: 0, duration: 0.9 }
         );
       }
 
-      // 2. Eyebrow "Save the Date"
+      // 2. Eyebrow "SAVE THE DATE"
       if (eyebrowRef.current) {
         tl.fromTo(
           eyebrowRef.current,
           { opacity: 0, y: 15 },
           { opacity: 1, y: 0, duration: 0.6 },
-          "-=0.4"
+          "-=0.5"
         );
       }
 
@@ -189,7 +173,7 @@ export default function InviteOverlay({ startAnimation = true }: InviteOverlayPr
         );
       }
 
-      // 4. Sub-eyebrow "To celebrate the wedding of"
+      // 4. Sub-eyebrow "TO CELEBRATE THE WEDDING OF"
       if (subEyebrowRef.current) {
         tl.fromTo(
           subEyebrowRef.current,
@@ -213,7 +197,7 @@ export default function InviteOverlay({ startAnimation = true }: InviteOverlayPr
       if (connectorRef.current) {
         tl.fromTo(
           connectorRef.current,
-          { opacity: 0, scale: 0.8, y: 10 },
+          { opacity: 0, scale: 0.85, y: 10 },
           { opacity: 1, scale: 1, y: 0, duration: 0.6 },
           "-=0.2"
         );
@@ -233,7 +217,7 @@ export default function InviteOverlay({ startAnimation = true }: InviteOverlayPr
       if (heartRef.current) {
         tl.to(
           heartRef.current,
-          { opacity: 0.85, scale: 1, duration: 0.5, ease: "back.out(1.7)" },
+          { opacity: 0.9, scale: 1, duration: 0.5, ease: "back.out(1.7)" },
           "-=0.2"
         );
       }
@@ -258,17 +242,7 @@ export default function InviteOverlay({ startAnimation = true }: InviteOverlayPr
         );
       }
 
-      // 11. Action Buttons reveal
-      if (actionsRef.current) {
-        tl.fromTo(
-          actionsRef.current,
-          { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.6 },
-          "-=0.2"
-        );
-      }
-
-      // 12. Footer details reveal
+      // 11. Footer details reveal
       if (footerRef.current) {
         tl.fromTo(
           footerRef.current,
@@ -285,47 +259,40 @@ export default function InviteOverlay({ startAnimation = true }: InviteOverlayPr
   return (
     <div
       ref={containerRef}
-      className="relative min-h-screen w-full flex flex-col items-center justify-center pointer-events-none px-4 py-10 z-10"
+      className="relative min-h-screen w-full flex flex-col items-center justify-center pointer-events-none px-4 py-8 z-10"
     >
-      {/* Outer Golden Ambient Frame */}
-      <div className="fixed inset-4 border border-gold/40 pointer-events-none rounded-2xl z-40 hidden sm:block" />
-      <div className="fixed inset-6 border border-gold/25 pointer-events-none rounded-xl z-40 hidden sm:block" />
-
-      {/* Main Invitation Card Layer */}
+      {/* Direct Floating Content Layer (No Heavy Card Box - Matching IMG_9318.JPG) */}
       <div
-        ref={cardRef}
+        ref={contentBoxRef}
         style={{ opacity: 0 }}
-        className="relative max-w-xl md:max-w-2xl w-full text-center p-7 sm:p-10 md:p-12 rounded-3xl bg-ivory/85 backdrop-blur-md border border-gold/30 shadow-[0_25px_60px_rgba(123,30,58,0.15)] pointer-events-auto transition-all duration-300 space-y-5 sm:space-y-6 my-auto"
+        className="relative max-w-xl md:max-w-2xl w-full text-center p-4 sm:p-8 pointer-events-auto space-y-4 sm:space-y-5 my-auto"
       >
-        {/* Subtle Decorative Corner Accents */}
-        <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-gold/50 rounded-tl-sm pointer-events-none" />
-        <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-gold/50 rounded-tr-sm pointer-events-none" />
-        <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-gold/50 rounded-bl-sm pointer-events-none" />
-        <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-gold/50 rounded-br-sm pointer-events-none" />
+        {/* Subtle Radial Glow Backdrop for Perfect Contrast */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(251,246,236,0.85)_0%,_rgba(251,246,236,0.6)_60%,_transparent_100%)] blur-md -z-10 rounded-full pointer-events-none" />
 
         {/* Eyebrow Header */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <h2
             ref={eyebrowRef}
             style={{ opacity: 0 }}
-            className="text-xs sm:text-sm uppercase tracking-[0.3em] font-semibold text-gold font-serif drop-shadow-xs"
+            className="text-xs sm:text-sm uppercase tracking-[0.35em] font-semibold text-maroon font-serif drop-shadow-[0_1px_2px_rgba(251,246,236,0.9)]"
           >
             {content.eyebrow}
           </h2>
-          <LineFlourishSVG pathRef={flourishPathRef} className="w-44 sm:w-56 h-4" />
+          <LineFlourishSVG pathRef={flourishPathRef} className="w-48 sm:w-60 h-4" />
           <p
             ref={subEyebrowRef}
             style={{ opacity: 0 }}
-            className="text-sm sm:text-base md:text-lg text-maroon/80 font-serif italic tracking-wide"
+            className="text-xs sm:text-sm uppercase tracking-[0.25em] font-semibold text-gold font-serif drop-shadow-[0_1px_2px_rgba(251,246,236,0.9)]"
           >
             {content.subEyebrow}
           </p>
         </div>
 
-        {/* Couple Names */}
+        {/* Couple Names (Exact IMG_9318.JPG Styling) */}
         <div className="py-1 space-y-1 sm:space-y-2 overflow-hidden">
           <div ref={firstNameRef}>
-            <h1 className="text-[clamp(2.2rem,5.5vw,4.2rem)] font-bold uppercase tracking-[0.12em] text-maroon font-serif leading-none drop-shadow-[0_2px_4px_rgba(251,246,236,0.9)]">
+            <h1 className="text-[clamp(2.4rem,6vw,4.6rem)] font-bold uppercase tracking-[0.14em] text-maroon font-serif leading-none drop-shadow-[0_2px_6px_rgba(251,246,236,0.95)]">
               <SplitText text={content.names.first} />
             </h1>
           </div>
@@ -333,38 +300,38 @@ export default function InviteOverlay({ startAnimation = true }: InviteOverlayPr
           <div
             ref={connectorRef}
             style={{ opacity: 0 }}
-            className="font-script text-[clamp(2rem,4.5vw,3.2rem)] text-gold py-0.5 drop-shadow-xs select-none"
+            className="font-script text-[clamp(2.2rem,5vw,3.6rem)] text-gold py-0.5 drop-shadow-[0_1px_3px_rgba(251,246,236,0.9)] select-none"
           >
             ~ {content.names.connector} ~
           </div>
 
           <div ref={secondNameRef}>
-            <h1 className="text-[clamp(2.2rem,5.5vw,4.2rem)] font-bold uppercase tracking-[0.12em] text-maroon font-serif leading-none drop-shadow-[0_2px_4px_rgba(251,246,236,0.9)]">
+            <h1 className="text-[clamp(2.4rem,6vw,4.6rem)] font-bold uppercase tracking-[0.14em] text-maroon font-serif leading-none drop-shadow-[0_2px_6px_rgba(251,246,236,0.95)]">
               <SplitText text={content.names.second} />
             </h1>
           </div>
         </div>
 
         {/* Heart / Floral Divider */}
-        <HeartOrnamentSVG ornamentRef={heartRef} className="w-12 sm:w-16 h-5" />
+        <HeartOrnamentSVG ornamentRef={heartRef} className="w-14 sm:w-16 h-5" />
 
-        {/* Date & Year Section */}
-        <div ref={dateRef} style={{ opacity: 0 }} className="space-y-1.5">
+        {/* Date Section (SATURDAY | 21 | NOVEMBER) */}
+        <div ref={dateRef} style={{ opacity: 0 }} className="space-y-1">
           <div className="flex items-center justify-center gap-3 sm:gap-6 text-maroon font-serif">
-            <span className="uppercase text-xs sm:text-sm md:text-base tracking-[0.2em] font-semibold text-maroon/90">
+            <span className="uppercase text-xs sm:text-sm tracking-[0.25em] font-semibold text-gold drop-shadow-xs">
               {content.date.day}
             </span>
-            <span className="h-6 w-px bg-gold/50" />
-            <span className="text-[clamp(2rem,4.5vw,3.2rem)] font-bold text-gold leading-none font-serif drop-shadow-xs">
+            <span className="h-7 w-px bg-gold/60" />
+            <span className="text-[clamp(2.2rem,5vw,3.6rem)] font-bold text-maroon leading-none font-serif drop-shadow-[0_2px_4px_rgba(251,246,236,0.9)]">
               {content.date.date}
             </span>
-            <span className="h-6 w-px bg-gold/50" />
-            <span className="uppercase text-xs sm:text-sm md:text-base tracking-[0.2em] font-semibold text-maroon/90">
+            <span className="h-7 w-px bg-gold/60" />
+            <span className="uppercase text-xs sm:text-sm tracking-[0.25em] font-semibold text-gold drop-shadow-xs">
               {content.date.month}
             </span>
           </div>
 
-          <div className="text-sm sm:text-base tracking-[0.3em] font-bold text-gold font-serif">
+          <div className="text-sm sm:text-base tracking-[0.3em] font-bold text-maroon font-serif drop-shadow-xs">
             {content.date.year}
           </div>
         </div>
@@ -373,57 +340,25 @@ export default function InviteOverlay({ startAnimation = true }: InviteOverlayPr
         <div
           ref={locationRef}
           style={{ opacity: 0 }}
-          className="flex items-center justify-center gap-2 text-maroon font-serif text-xs sm:text-sm md:text-base tracking-[0.25em] uppercase font-semibold"
+          className="flex flex-col items-center justify-center gap-1 text-maroon font-serif text-xs sm:text-sm tracking-[0.25em] uppercase font-semibold"
         >
-          <PinIconSVG className="w-4 h-4 text-gold shrink-0" />
-          <span>{content.location}</span>
-        </div>
-
-        {/* Interactive Action Buttons (Framer Motion Micro-Interactions) */}
-        <div
-          ref={actionsRef}
-          style={{ opacity: 0 }}
-          className="flex flex-wrap items-center justify-center gap-3 pt-2 pointer-events-auto"
-        >
-          <motion.button
-            whileHover={{ scale: 1.04, boxShadow: "0 0 20px rgba(184, 147, 90, 0.35)" }}
-            whileTap={{ scale: 0.96 }}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-maroon text-ivory text-xs sm:text-sm font-serif tracking-wider uppercase font-medium shadow-md border border-gold/40 transition-colors hover:bg-maroon/90"
-          >
-            <CalendarIconSVG className="w-4 h-4 text-gold" />
-            <span>Add to Calendar</span>
-          </motion.button>
-
-          <motion.button
-            whileHover={{ scale: 1.04, boxShadow: "0 0 20px rgba(184, 147, 90, 0.35)" }}
-            whileTap={{ scale: 0.96 }}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-ivory text-maroon text-xs sm:text-sm font-serif tracking-wider uppercase font-medium shadow-md border border-gold/60 transition-colors hover:bg-ivory/90"
-          >
-            <PinIconSVG className="w-4 h-4 text-gold" />
-            <span>View Location</span>
-          </motion.button>
-        </div>
-
-        {/* Footer Details */}
-        <div ref={footerRef} style={{ opacity: 0 }} className="pt-1 space-y-2">
-          <LineFlourishSVG className="w-40 sm:w-48 h-3 opacity-75" />
-          <div className="space-y-0.5 text-xs sm:text-sm text-maroon/75 font-serif italic tracking-wide">
-            <p>{content.footerLine1}</p>
-            <p>{content.footerLine2}</p>
+          <LineFlourishSVG className="w-36 sm:w-44 h-3 opacity-80" />
+          <div className="flex items-center gap-1.5 pt-1">
+            <PinIconSVG className="w-4 h-4 text-maroon" />
+            <span className="text-maroon font-bold">{content.location}</span>
           </div>
         </div>
-      </div>
 
-      {/* Floating Scroll Cue Indicator */}
-      <motion.div
-        animate={{ y: [0, 8, 0] }}
-        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-        className="fixed bottom-6 z-40 text-center pointer-events-none hidden sm:block"
-      >
-        <div className="w-5 h-8 border border-gold/60 rounded-full mx-auto flex items-start justify-center p-1 backdrop-blur-xs bg-ivory/40">
-          <div className="w-1 h-2 bg-gold rounded-full" />
+        {/* Footer Details (Exact Copy & Flourishes) */}
+        <div ref={footerRef} style={{ opacity: 0 }} className="pt-2 space-y-2">
+          <LineFlourishSVG className="w-44 sm:w-52 h-3 opacity-80" />
+          <div className="space-y-1 text-xs sm:text-sm text-maroon/90 font-serif font-medium tracking-[0.15em] uppercase drop-shadow-xs">
+            <p>{content.footerLine1}</p>
+            <p className="text-[11px] sm:text-xs text-maroon/80">{content.footerLine2}</p>
+          </div>
+          <LineFlourishSVG className="w-36 sm:w-44 h-3 opacity-70" />
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
